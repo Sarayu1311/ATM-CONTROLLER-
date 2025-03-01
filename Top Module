@@ -10,6 +10,7 @@ module atm_controller(
     output reg txn_success,
     output reg [20:0] balance_amount
 );
+    //Initializing States
     parameter idle = 4'b0000;
     parameter pin_verify = 4'b0001;
     parameter mainmenu = 4'b0010;
@@ -23,12 +24,12 @@ module atm_controller(
     reg [20:0] balance [2:0];  // Balance for 3 users
     reg [3:0] pins [2:0];      // PINs for 3 users
 
-    // Initialize balance and PINs
+    // Initializing balance and PINs
     initial begin
         balance[0] = 21'd10000;
         pins[0] = 4'b1001; // PIN: 9
         balance[1] = 21'd15000;
-        pins[1] = 4'b1001; // PIN: 9
+        pins[1] = 4'b1000; // PIN: 8
         balance[2] = 21'd20000;
         pins[2] = 4'b1010; // PIN: 10
     end
@@ -115,21 +116,22 @@ module atm_controller(
                     2'b01: begin
                         txn_success = 1;
                         error_msg = 0;
-                        if(pin == pins[0]) begin
-                            balance[0] = balance[0] - amount_withdraw;
-                            balance_amount = balance[0];
-                        end else if(pin == pins[1]) begin
-                            balance[1] = balance[1] - amount_withdraw;
-                            balance_amount = balance[1];
-                        end else begin
-                            balance[2] = balance[2] - amount_withdraw;
-                            balance_amount = balance[2];
-                        end
-                    end
+                      case (pin)
+    pins[0]: begin
+        balance[0] = balance[0] - amount_withdraw;
+        balance_amount = balance[0];
+    end
+    pins[1]: begin
+        balance[1] = balance[1] - amount_withdraw;
+        balance_amount = balance[1];
+    end
+    pins[2]: begin
+        balance[2] = balance[2] - amount_withdraw;
+        balance_amount = balance[2];
+    end
+endcase
 
-                    default: begin
-                        txn_success = 0;
-                        error_msg = 1;
+                        end
                     end
                 endcase
             end
