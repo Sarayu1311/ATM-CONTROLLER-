@@ -13,7 +13,7 @@ module tb;
     wire txn_success;
     wire [20:0] balance_amount;
 
-    // Instantiate the Unit Under Test (UUT)
+    // Instantiating Unit Under Test (UUT)
     atm_controller uut (
         .card_in(card_in),
         .pin(pin),
@@ -27,42 +27,42 @@ module tb;
         .balance_amount(balance_amount)
     );
 
-    // Clock generation
-    always #5 clk = ~clk;  // Clock period: 10 ns
+    // Generating clock
+    always #5 clk = ~clk;  // Clock time period: 10 ns
 
     initial begin
-        // Initialize Inputs
+        // Initializing Inputs
         clk = 0;
-        reset = 1;  // Reset the system
+        reset = 1; 
         card_in = 0;
         pin = 4'b0000;
-        menu_select = 2'b00;
+        menu_select = 2'b10;
         amount_withdraw = 0;
         another_txn = 0;
 
-        // Wait for reset to complete
+        // Waiting for reset to complete
         #10 reset = 0;
 
         // Test Case 1: Insert card and verify PIN (valid case)
-        #10 card_in = 1;  // Insert card
-        #10 pin = 4'b1001;  // Enter correct PIN for user 1
-        #20 menu_select = 2'b00;  // Select "Check Balance"
-        #20;  // Wait for the balance to be displayed
+        #10 card_in = 1;  
+        #10 pin = 4'b1001; 
+        #20 menu_select = 2'b00;  // Selected "Check Balance"
+        #20;  //balance to display
 
         // Test Case 2: Withdraw money
-        #10 menu_select = 2'b01;  // Select "Withdraw"
+        #10 menu_select = 2'b01;  // Selected "Withdraw"
         amount_withdraw = 21'd500;  // Withdraw 500 units
-        #20;  // Wait for the transaction to complete
+        #20;  //transaction to complete
 
-        // Test Case 3: Retry with incorrect PIN (3 attempts)
+        // Test Case 3: Testing with incorrect PIN (3 attempts)
         #10 card_in = 0;  // Remove card
         #10 card_in = 1;  // Insert card again
-        pin = 4'b0001;  // Enter wrong PIN
-        #20 pin = 4'b0010;  // Enter wrong PIN again
-        #20 pin = 4'b0100;  // Enter wrong PIN for the third time
+        pin = 4'b0001;  // Entered wrong PIN
+        #20 pin = 4'b0010;  // Entered wrong PIN again
+        #20 pin = 4'b0100;  // Entered wrong PIN for the third time
         #20;  // Check error message
 
-        // Test Case 4: Perform multiple transactions
+        // Test Case 4: Performing multiple transactions
         #10 card_in = 1;  // Insert card
         pin = 4'b1001;  // Enter correct PIN
         #20 menu_select = 2'b01;  // Withdraw money
