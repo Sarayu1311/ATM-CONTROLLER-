@@ -116,21 +116,15 @@ module atm_controller(
                     2'b01: begin
                         txn_success = 1;
                         error_msg = 0;
-                      case (pin)
-    pins[0]: begin
-        balance[0] = balance[0] - amount_withdraw;
-        balance_amount = balance[0];
-    end
-    pins[1]: begin
-        balance[1] = balance[1] - amount_withdraw;
-        balance_amount = balance[1];
-    end
-    pins[2]: begin
-        balance[2] = balance[2] - amount_withdraw;
-        balance_amount = balance[2];
-    end
-endcase
-
+                       if(pin == pins[0]) begin
+                            balance[0] = balance[0] - amount_withdraw;
+                            balance_amount = balance[0];
+                        end else if(pin == pins[1]) begin
+                            balance[1] = balance[1] - amount_withdraw;
+                            balance_amount = balance[1];
+                        end else begin
+                            balance[2] = balance[2] - amount_withdraw;
+                            balance_amount = balance[2];
                         end
                     end
                 endcase
